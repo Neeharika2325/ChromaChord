@@ -1,76 +1,37 @@
-# AuraBeat
+# ChromaChord
 
-AuraBeat detects facial expressions from a webcam and uses the detected mood to
-search Spotify for a track. Webcam frames are analyzed locally; Spotify is used
-only for the text search and playback link.
+## About the Project
+Music is deeply emotional, yet finding the right song usually requires manual searching and typing. **ChromaChord** solves this by creating a seamless bridge between your current mood and your music. 
+
+This is a real-time affective computing application that reads your facial expressions through your webcam and automatically generates a matching Telugu music playlist. Instead of asking you what you want to listen to, ChromaChord detects if you are happy, sad, angry, or relaxed, and instantly routes you to a customized YouTube search for that specific vibe. 
+
+All video processing and AI inference happen 100% locally on your machine to ensure privacy and zero lag.
+
+## Features
+* **Live Emotion Detection:** Captures your webcam feed and classifies your mood instantly using a custom-trained Convolutional Neural Network (CNN).
+* **Telugu Music Integration:** Dynamically maps 7 different human emotions to customized Telugu YouTube search queries.
+* **Privacy-First Processing:** No cloud APIs are used for facial recognition; your camera feed never leaves your computer.
+* **Interactive UI:** A clean Streamlit dashboard that shows your live camera feed, emotion probabilities, and a one-click music playback button.
 
 ## Requirements
+To run this project, you will need a connected webcam and the following core tools:
+* **Python** (3.8 or higher)
+* **TensorFlow / Keras** (for the CNN model)
+* **OpenCV** (for real-time face detection)
+* **Streamlit** (for the web dashboard)
+* **Pandas & NumPy** (for data handling)
 
-- Python 3.10 or newer
-- A webcam
-- Spotify Developer application credentials
-- FER2013-style grayscale face images arranged in the seven class folders below
+## Dataset Layout
+This model is trained on facial emotion images (such as the standard FER-2013 dataset). Your images should be organized into 7 emotion categories inside a main `data` folder:
 
-## Dataset layout
+`data/` ➔ `train/` & `test/` ➔ `angry`, `disgust`, `fear`, `happy`, `neutral`, `sad`, `surprise`
 
-Provide separate training and validation/test splits. The folder names must be
-exactly `angry`, `disgust`, `fear`, `happy`, `neutral`, `sad`, and `surprise`.
+*(Simply place your images into their respective emotion folders before running the training script).*
 
-```text
-data/
-  train/
-    angry/
-    disgust/
-    fear/
-    happy/
-    neutral/
-    sad/
-    surprise/
-  test/
-    angry/
-    disgust/
-    fear/
-    happy/
-    neutral/
-    sad/
-    surprise/
-```
-
-Each class folder should contain image files. Training stops with a descriptive
-error if either split or any class folder is missing. If the test split is
-currently at `data/train/test`, training detects that layout and uses it as the
-validation split; the recommended layout is the separate `data/test` folder.
-
-## Install and configure
-
-Run these commands from the project directory:
+## Installation
+Run these commands in your terminal to create a virtual environment and install the dependencies:
 
 ```powershell
-py -3.10 -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-Add your Spotify app's client ID and secret to `.env`:
-
-```dotenv
-SPOTIPY_CLIENT_ID=your_real_client_id
-SPOTIPY_CLIENT_SECRET=your_real_client_secret
-```
-
-The `.env` file is excluded from version control. Do not publish real credentials.
-Spotify Client Credentials enables catalog search but cannot control playback on
-a user's account; AuraBeat opens the selected Spotify track in the default
-browser.
-
-## Train and run
-
-```powershell
-python train_model.py
-streamlit run app.py
-```
-
-Training writes the best validation-accuracy model to `model.h5`. In the app,
-allow camera access and switch on **Start webcam** in the sidebar. Use **Play
-Mood Track** to search for and open a track matching the detected emotion.
